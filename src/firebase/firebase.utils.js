@@ -12,6 +12,35 @@ const config = {
   measurementId: "G-WGLZF6FLS0",
 };
 
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  //Check if null
+  if (!userAuth) return;
+
+  //See if user already exists
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+  //Document Snapshot exists property will tell you if the document, this uid, exists in the collection
+
+  const snapShot = await userRef.get();
+
+  if (!snapShot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData,
+      });
+    } catch (error) {
+      console.log("error creating user", error.message);
+    }
+  }
+
+  return userRef;
+};
+
 firebase.initializeApp(config);
 
 export const auth = firebase.auth();
