@@ -28,6 +28,10 @@ class SignUp extends React.Component {
       alert("Passwords don't match");
       return;
     }
+    if (password.length < 6) {
+      alert("Password must be atleast 6 characters");
+      return;
+    }
 
     try {
       const { user } = await auth.createUserWithEmailAndPassword(
